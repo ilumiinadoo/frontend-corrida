@@ -1,7 +1,8 @@
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+//import { useNavigate } from 'react-router-dom'
+//import { useAuth } from '../context/AuthContext'
 
 export default function Dashboard() {
+  /*
   const navigate = useNavigate()
   const { token, logout } = useAuth()
 
@@ -13,7 +14,7 @@ export default function Dashboard() {
   const handleIrParaPerfil = () => {
     navigate('/perfil')
   }
-  /*
+  
   return (
     
     <div className="p-8">

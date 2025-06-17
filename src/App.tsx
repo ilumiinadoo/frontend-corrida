@@ -2,7 +2,7 @@ import 'leaflet/dist/leaflet.css'; // ✅ necessário para o mapa funcionar visu
 //import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./index.css";
 
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Login from './pages/Login'
 import LoginCallback from './pages/LoginCallback'
 //import Dashboard from './pages/Dashboard'

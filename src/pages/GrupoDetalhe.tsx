@@ -38,7 +38,7 @@ export default function GrupoDetalhe() {
   const token = localStorage.getItem("token");
   const [grupo, setGrupo] = useState<Grupo | null>(null);
   const [meuId, setMeuId] = useState("");
-  const [feed, setFeed] = useState<any[]>([]);
+  //const [feed, setFeed] = useState<any[]>([]);
   const [rotas, setRotas] = useState<any[]>([]);
   const [rankings, setRankings] = useState<any | null>(null);
   const [loadingRanking, setLoadingRanking] = useState(false);
@@ -67,12 +67,12 @@ export default function GrupoDetalhe() {
     }
   };
 
-  const fetchFeed = async () => {
+  /*const fetchFeed = async () => {
     const res = await fetch(Endpoints.FEED_DO_GRUPO(id!), {
       headers: { Authorization: `Bearer ${token}` },
     });
     if (res.ok) setFeed(await res.json());
-  };
+  };*/
 
   const fetchRotas = async () => {
     const res = await fetch(Endpoints.ROTAS_POR_GRUPO(id!), {
@@ -187,7 +187,7 @@ export default function GrupoDetalhe() {
       const souAdmin = grupo.administradores.includes(meuId);
       const souMembro = grupo.membros.includes(meuId);
       if (souAdmin || souMembro) {
-        fetchFeed();
+        //fetchFeed();
         fetchRotas();
         fetchEventosFuturos();
       }

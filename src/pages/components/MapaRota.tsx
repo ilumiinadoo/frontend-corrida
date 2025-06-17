@@ -1,7 +1,6 @@
 import { MapContainer, TileLayer, Marker, Polyline, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { useEffect } from "react";
 
 // Corrige o ícone padrão que não aparece corretamente em alguns ambientes
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
@@ -21,7 +20,6 @@ interface Props {
 }
 
 export default function MapaRota({ rota }: Props) {
-  const center = rota?.features?.[0]?.geometry?.coordinates?.[0] || [0, 0];
 
   // Converte coordenadas [lng, lat] para [lat, lng]
   const pontos: [number, number][] = rota
