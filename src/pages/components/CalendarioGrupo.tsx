@@ -250,61 +250,72 @@ export default function CalendarioGrupo({ groupId, souAdmin }: Props) {
       {loading ? (
         <div className="p-4">Carregando eventos...</div>
       ) : (
-        <div className="flex flex-col md:flex-row gap-8">
-          <Calendar
-            locale="pt-BR"
-            onChange={(date) => setDataSelecionada(date as Date)}
-            value={dataSelecionada}
-            tileClassName={({ date }) => {
-              const temEvento = eventos.some(
-                (ev) => new Date(ev.startDate).toDateString() === date.toDateString()
-              );
-              return temEvento ? "bg-blue-100 text-blue-700 font-bold rounded" : undefined;
-            }}
-          />
+        <>
+          <div className="flex flex-col md:flex-row gap-8">
+            <Calendar
+              locale="pt-BR"
+              onChange={(date) => setDataSelecionada(date as Date)}
+              value={dataSelecionada}
+              tileClassName={({ date }) => {
+                const temEvento = eventos.some(
+                  (ev) => new Date(ev.startDate).toDateString() === date.toDateString()
+                );
+                return temEvento ? "bg-blue-100 text-blue-700 font-bold rounded" : undefined;
+              }}
+            />
 
-          <div className="flex-1">
-            <h3 className="text-base font-semibold mb-2">
-              Eventos em {dataSelecionada.toLocaleDateString()}
-            </h3>
-            {eventosDoDia.length === 0 ? (
-              <p className="text-gray-500">Nenhum evento cadastrado para este dia.</p>
-            ) : (
-              <ul className="space-y-4">
-                {eventosDoDia.map((ev) => (
-                  <li
-                    key={ev._id}
-                    className="border p-4 rounded bg-white shadow cursor-pointer hover:bg-blue-50"
-                    onClick={() => setEventoSelecionadoId(ev._id)}
-                    tabIndex={0}
-                  >
-                    <p className="font-bold">{ev.title}</p>
-                    <p className="text-sm text-gray-600">{ev.description}</p>
-                    <p className="text-sm text-gray-500">
-                      Início: {new Date(ev.startDate).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                      {ev.endDate && (
-                        <>
-                          {" • Fim: "}
-                          {new Date(ev.endDate).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                        </>
+            <div className="flex-1">
+              <h3 className="text-base font-semibold mb-2">
+                Eventos em {dataSelecionada.toLocaleDateString()}
+              </h3>
+              {eventosDoDia.length === 0 ? (
+                <p className="text-gray-500">Nenhum evento cadastrado para este dia.</p>
+              ) : (
+                <ul className="space-y-4">
+                  {eventosDoDia.map((ev) => (
+                    <li
+                      key={ev._id}
+                      className="border p-4 rounded bg-white shadow cursor-pointer hover:bg-blue-50"
+                      onClick={() => setEventoSelecionadoId(ev._id)}
+                      tabIndex={0}
+                    >
+                      <p className="font-bold">{ev.title}</p>
+                      <p className="text-sm text-gray-600">{ev.description}</p>
+                      <p className="text-sm text-gray-500">
+                        Início:{" "}
+                        {new Date(ev.startDate).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                        {ev.endDate && (
+                          <>
+                            {" • Fim: "}
+                            {new Date(ev.endDate).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </>
+                        )}
+                      </p>
+                      {ev.location && (
+                        <p className="text-sm text-gray-400">Local: {ev.location}</p>
                       )}
-                    </p>
-                    {ev.location && (
-                      <p className="text-sm text-gray-400">Local: {ev.location}</p>
-                    )}
-                    {eventoSelecionadoId && (
-                      <ModalEventoDetalhe
-                        eventoId={eventoSelecionadoId}
-                        aberto={true}
-                        onClose={() => setEventoSelecionadoId(null)}
-                      />
-                    )}
-                  </li>
-                ))}
-              </ul>
-            )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
-        </div>
+
+          {/* ModalEventoDetalhe - Fora do map, controlado por eventoSelecionadoId */}
+          {eventoSelecionadoId && (
+            <ModalEventoDetalhe
+              eventoId={eventoSelecionadoId}
+              aberto={true}
+              onClose={() => setEventoSelecionadoId(null)}
+            />
+          )}
+        </>
       )}
     </div>
   );
