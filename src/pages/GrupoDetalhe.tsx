@@ -178,6 +178,39 @@ export default function GrupoDetalhe() {
     }
   };
 
+  const removerDoGrupo = async (userId: string) => {
+    try {
+      const response = await fetch(`${Endpoints.REMOVER_MEMBRO(id!, userId)}`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast({
+          title: 'Erro',
+          description: errorData.message || 'Erro ao remover membro.',
+        });
+        return;
+      }
+
+      toast({
+        title: 'Sucesso',
+        description: 'Membro removido com sucesso.',
+      });
+
+      // Atualizar a listagem após a remoção
+      fetchGrupo();
+    } catch (error) {
+      toast({
+        title: 'Erro',
+        description: 'Falha ao remover membro.',
+      });
+    }
+  };
+
   useEffect(() => {
     if (token && id) Promise.all([fetchMeuId(), fetchGrupo()]);
   }, []);
@@ -396,17 +429,32 @@ export default function GrupoDetalhe() {
               <CardTitle>Administradores</CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="list-disc pl-6">
+              <ul className="space-y-3">
                 {grupo.administradores.map((id) => (
-                  <li key={id} className="flex items-center gap-2">
+                  <li
+                    key={id}
+                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b pb-2"
+                  >
                     <span>{usuariosMap[id]?.nome || id}</span>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => navigate(`/perfil/${id}`)}
-                    >
-                      Ver perfil
-                    </Button>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => navigate(`/perfil/${id}`)}
+                      >
+                        Ver perfil
+                      </Button>
+
+                      {souAdmin && (
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => removerDoGrupo(id)}
+                        >
+                          Remover do grupo
+                        </Button>
+                      )}
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -419,26 +467,42 @@ export default function GrupoDetalhe() {
               <CardTitle>Membros</CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="list-disc pl-6">
+              <ul className="space-y-3">
                 {grupo.membros.map((id) => (
-                  <li key={id} className="flex items-center gap-2">
+                  <li
+                    key={id}
+                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b pb-2"
+                  >
                     <span>{usuariosMap[id]?.nome || id}</span>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => navigate(`/perfil/${id}`)}
-                    >
-                      Ver perfil
-                    </Button>
-                    {souAdmin && !grupo.administradores.includes(id) && (
+                    <div className="flex flex-wrap gap-2">
                       <Button
                         size="sm"
-                        variant="secondary"
-                        onClick={() => promoverAdmin(id)}
+                        variant="outline"
+                        onClick={() => navigate(`/perfil/${id}`)}
                       >
-                        Promover a admin
+                        Ver perfil
                       </Button>
-                    )}
+
+                      {souAdmin && !grupo.administradores.includes(id) && (
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => promoverAdmin(id)}
+                        >
+                          Promover a admin
+                        </Button>
+                      )}
+
+                      {souAdmin && (
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => removerDoGrupo(id)}
+                        >
+                          Remover do grupo
+                        </Button>
+                      )}
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -455,24 +519,29 @@ export default function GrupoDetalhe() {
                 {grupo.pendentes.length === 0 ? (
                   <p className="text-gray-500">Nenhuma solicitação.</p>
                 ) : (
-                  <ul className="list-disc pl-6">
+                  <ul className="space-y-3">
                     {grupo.pendentes.map((id) => (
-                      <li key={id} className="flex items-center gap-2">
+                      <li
+                        key={id}
+                        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b pb-2"
+                      >
                         <span>{usuariosMap[id]?.nome || id}</span>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => navigate(`/perfil/${id}`)}
-                        >
-                          Ver perfil
-                        </Button>
-                        <Button
-                          size="sm"
-                          className="bg-green-600 hover:bg-green-700 text-white"
-                          onClick={() => aprovarMembro(id)}
-                        >
-                          Aprovar
-                        </Button>
+                        <div className="flex flex-wrap gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => navigate(`/perfil/${id}`)}
+                          >
+                            Ver perfil
+                          </Button>
+                          <Button
+                            size="sm"
+                            className="bg-green-600 hover:bg-green-700 text-white"
+                            onClick={() => aprovarMembro(id)}
+                          >
+                            Aprovar
+                          </Button>
+                        </div>
                       </li>
                     ))}
                   </ul>
@@ -480,6 +549,7 @@ export default function GrupoDetalhe() {
               </CardContent>
             </Card>
           )}
+
         </>
       )}
 

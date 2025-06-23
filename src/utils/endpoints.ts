@@ -26,6 +26,7 @@ export const Endpoints = {
     FEED_DO_GRUPO: (id: string) => `${API}/groups/${id}/feed`,
     APROVAR_MEMBRO: (grupoId: string, userId: string) => `${API}/groups/${grupoId}/approve/${userId}`,
     PROMOVER_ADMIN: (grupoId: string, userId: string) => `${API}/groups/${grupoId}/promote/${userId}`,
+    REMOVER_MEMBRO: (groupId: string, userId: string) => `${API}/groups/${groupId}/remove-member/${userId}`,
 
     // Rotas
     CRIAR_ROTA: `${API}/routes`,
