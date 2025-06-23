@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function NovaAtividade() {
   const [modo, setModo] = useState<"manual" | "mapa">("manual");
-  const [distancia, setDistancia] = useState(0);
+  const [distancia, setDistancia] = useState("");
   const [horas, setHoras] = useState("");
   const [minutos, setMinutos] = useState("");
   const [segundos, setSegundos] = useState("");
@@ -58,12 +58,14 @@ export default function NovaAtividade() {
     const tempoTotalMinutos =
     (Number(horas) * 60) + Number(minutos) + Number(segundos) / 60;
 
+    const distanciaFinal = Number(distancia.replace(',', '.'));
 
     const payload: any = {
-      distanciaKm: distancia,
+      distanciaKm: distanciaFinal,
       tempoMinutos: tempoTotalMinutos,
       data,
     };
+
 
     if (modo === "mapa") {
       payload.pontoInicio = pontoInicio;
@@ -149,10 +151,10 @@ export default function NovaAtividade() {
               <div>
                 <Label>Distância (km)</Label>
                 <Input
-                  type="number"
-                  placeholder="Ex: 5.0"
+                  type="text"
+                  placeholder="Ex: 7,5 ou 7.5"
                   value={distancia}
-                  onChange={(e) => setDistancia(Number(e.target.value))}
+                  onChange={(e) => setDistancia(e.target.value)}
                   required
                 />
               </div>
