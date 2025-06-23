@@ -134,6 +134,20 @@ export default function CalendarioGrupo({ groupId, souAdmin }: Props) {
     }
   };
 
+  const handleExcluirEvento = async (eventoId: string) => {
+    const confirmar = window.confirm("Tem certeza que deseja excluir este evento?");
+    if (!confirmar) return;
+
+    try {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/events/${eventoId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      await fetchEventos();
+    } catch {
+      alert("Erro ao excluir o evento.");
+    }
+  };
+
   const eventosDoDia = eventos.filter((ev) => {
     const d = new Date(ev.startDate);
     return d.toDateString() === dataSelecionada.toDateString();
@@ -282,23 +296,29 @@ export default function CalendarioGrupo({ groupId, souAdmin }: Props) {
                       <p className="font-bold">{ev.title}</p>
                       <p className="text-sm text-gray-600">{ev.description}</p>
                       <p className="text-sm text-gray-500">
-                        Início:{" "}
-                        {new Date(ev.startDate).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
+                        Início: {new Date(ev.startDate).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                         {ev.endDate && (
                           <>
                             {" • Fim: "}
-                            {new Date(ev.endDate).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
+                            {new Date(ev.endDate).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                           </>
                         )}
                       </p>
                       {ev.location && (
                         <p className="text-sm text-gray-400">Local: {ev.location}</p>
+                      )}
+
+                      {souAdmin && (
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleExcluirEvento(ev._id);
+                          }}
+                        >
+                          Excluir evento
+                        </Button>
                       )}
                     </li>
                   ))}
