@@ -150,6 +150,35 @@ export default function Grupos() {
     }
   };
 
+  // Sair do grupo
+  const sairDoGrupo = async (id: string) => {
+    const confirmar = window.confirm("Tem certeza que deseja sair deste grupo?");
+    if (!confirmar) return;
+
+    try {
+      const res = await fetch(Endpoints.SAIR_DO_GRUPO(id), {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.ok) {
+        toast({
+          title: "Saída confirmada",
+          description: "Você saiu do grupo com sucesso.",
+        });
+        buscarGrupos();
+      } else {
+        const data = await res.json();
+        toast({
+          title: "Erro ao sair do grupo",
+          description: data.message || "Não foi possível sair. Tente novamente.",
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao sair do grupo:", error);
+    }
+  };
+
   // Ordenação: Grupos que o usuário participa primeiro
   const gruposOrdenados = [...grupos].sort((a, b) => {
     const estaNoA = a.membros.includes(meuId);
@@ -266,6 +295,16 @@ export default function Grupos() {
                       >
                         Ver grupo
                       </Button>
+
+                      {souMembro && (
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => sairDoGrupo(grupo._id)}
+                        >
+                          Sair do grupo
+                        </Button>
+                      )}
 
                       {souAdmin && (
                         <Button
