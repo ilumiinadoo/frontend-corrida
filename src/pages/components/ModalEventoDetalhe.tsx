@@ -77,7 +77,12 @@ export default function ModalEventoDetalhe({ eventoId, aberto, onClose }: Props)
   if (!evento) return null;
 
   return (
-    <Dialog open={aberto} onOpenChange={onClose}>
+    <Dialog
+      open={aberto}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
       <DialogContent className="max-w-3xl">
         <DialogTitle>{evento.title}</DialogTitle>
         <div className="mt-2 space-y-2 text-sm text-muted-foreground">
