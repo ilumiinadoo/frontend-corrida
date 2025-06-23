@@ -254,9 +254,10 @@ export default function GrupoDetalhe() {
 
       {(souMembro || souAdmin) && (
         <>
-          <div className="flex flex-col sm:flex-row sm:gap-4">
-            {/* Bloco com os dois primeiros botões (Calendário e Ranking) */}
-            <div className="flex flex-col sm:flex-row sm:gap-4">
+          <div className="flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:items-start sm:gap-4">
+            {/* Bloco com os dois primeiros botões lado a lado no desktop */}
+            <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-4">
+              {/* Botão Calendário */}
               <Dialog>
                 <DialogTrigger asChild>
                   <Button variant="default" className="w-full sm:w-auto">
@@ -271,9 +272,10 @@ export default function GrupoDetalhe() {
                 </DialogContent>
               </Dialog>
 
+              {/* Botão Ranking */}
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button onClick={abrirRanking} variant="default" className="w-full sm:w-auto mt-2 sm:mt-0">
+                  <Button onClick={abrirRanking} variant="default" className="w-full sm:w-auto">
                     Ver Ranking do Grupo
                   </Button>
                 </DialogTrigger>
@@ -298,17 +300,16 @@ export default function GrupoDetalhe() {
               </Dialog>
             </div>
 
-            {/* Botão Criar Rota - sempre abaixo no mobile */}
+            {/* Botão Criar Rota (sempre abaixo no mobile e desktop) */}
             {souAdmin && (
               <Button
                 onClick={() => navigate(`/grupos/${id}/nova-rota`)}
-                className="bg-green-600 hover:bg-green-700 text-white mt-4 w-full sm:w-auto"
+                className="bg-green-600 hover:bg-green-700 text-white w-full sm:w-auto mt-2 sm:mt-4"
               >
                 Criar Rota
               </Button>
             )}
           </div>
-
 
           <Separator className="my-6" />
 
