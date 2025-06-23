@@ -254,62 +254,62 @@ export default function GrupoDetalhe() {
 
       {(souMembro || souAdmin) && (
         <>
-          <div className="flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:items-start sm:gap-4">
-            {/* Bloco com os dois primeiros botões lado a lado no desktop */}
-            <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-4">
-              {/* Botão Calendário */}
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="default" className="w-full sm:w-auto">
-                    Acessar Calendário do Grupo
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-3xl">
-                  <DialogHeader>
-                    <DialogTitle>Calendário do Grupo</DialogTitle>
-                  </DialogHeader>
-                  <CalendarioGrupo groupId={grupo._id} souAdmin={souAdmin} />
-                </DialogContent>
-              </Dialog>
+          {/* Bloco dos dois primeiros botões */}
+          <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-4">
+            {/* Botão Calendário */}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="default" className="w-full sm:w-auto">
+                  Acessar Calendário do Grupo
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-3xl">
+                <DialogHeader>
+                  <DialogTitle>Calendário do Grupo</DialogTitle>
+                </DialogHeader>
+                <CalendarioGrupo groupId={grupo._id} souAdmin={souAdmin} />
+              </DialogContent>
+            </Dialog>
 
-              {/* Botão Ranking */}
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button onClick={abrirRanking} variant="default" className="w-full sm:w-auto">
-                    Ver Ranking do Grupo
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Ranking por Nível</DialogTitle>
-                  </DialogHeader>
-                  {loadingRanking ? (
-                    <div className="flex justify-center py-6">
-                      <Loader2 className="animate-spin" />
-                    </div>
-                  ) : (
-                    rankings && (
-                      <>
-                        {renderNivel('Iniciantes', rankings['iniciante'], 'border-blue-500')}
-                        {renderNivel('Intermediários', rankings['intermediário'], 'border-yellow-500')}
-                        {renderNivel('Avançados', rankings['avançado'], 'border-red-500')}
-                      </>
-                    )
-                  )}
-                </DialogContent>
-              </Dialog>
-            </div>
+            {/* Botão Ranking */}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button onClick={abrirRanking} variant="default" className="w-full sm:w-auto">
+                  Ver Ranking do Grupo
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Ranking por Nível</DialogTitle>
+                </DialogHeader>
+                {loadingRanking ? (
+                  <div className="flex justify-center py-6">
+                    <Loader2 className="animate-spin" />
+                  </div>
+                ) : (
+                  rankings && (
+                    <>
+                      {renderNivel('Iniciantes', rankings['iniciante'], 'border-blue-500')}
+                      {renderNivel('Intermediários', rankings['intermediário'], 'border-yellow-500')}
+                      {renderNivel('Avançados', rankings['avançado'], 'border-red-500')}
+                    </>
+                  )
+                )}
+              </DialogContent>
+            </Dialog>
+          </div>
 
-            {/* Botão Criar Rota (sempre abaixo no mobile e desktop) */}
-            {souAdmin && (
+          {/* Botão Criar Rota sempre abaixo */}
+          {souAdmin && (
+            <div className="mt-4">
               <Button
                 onClick={() => navigate(`/grupos/${id}/nova-rota`)}
-                className="bg-green-600 hover:bg-green-700 text-white w-full sm:w-auto mt-2 sm:mt-4"
+                className="bg-green-600 hover:bg-green-700 text-white w-full sm:w-auto"
               >
                 Criar Rota
               </Button>
-            )}
-          </div>
+            </div>
+          )}
 
           <Separator className="my-6" />
 
