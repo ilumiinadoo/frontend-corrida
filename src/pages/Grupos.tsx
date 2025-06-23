@@ -33,95 +33,132 @@ export default function Grupos() {
   const token = localStorage.getItem("token") || "";
   const navigate = useNavigate();
 
+  // Buscar todos os grupos
   const buscarGrupos = async () => {
-    const res = await fetch(Endpoints.GRUPOS, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (res.ok) {
-      const data = await res.json();
-      setGrupos(data);
+    try {
+      const res = await fetch(Endpoints.GRUPOS, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setGrupos(data);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar grupos:", error);
     }
   };
 
+  // Buscar o ID do usuário logado
   const buscarMeuId = async () => {
-    const res = await fetch(Endpoints.USUARIO_ATUAL, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (res.ok) {
-      const data = await res.json();
-      setMeuId(data._id);
+    try {
+      const res = await fetch(Endpoints.USUARIO_ATUAL, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setMeuId(data._id);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar usuário atual:", error);
     }
   };
 
+  // Criar um novo grupo
   const criarGrupo = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await fetch(Endpoints.CRIAR_GRUPO, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ nome, descricao }),
-    });
-    const data = await res.json().catch(() => null);
+    try {
+      const res = await fetch(Endpoints.CRIAR_GRUPO, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ nome, descricao }),
+      });
 
-    if (!res.ok) {
-      toast({
-        title: "Erro ao criar grupo",
-        description: data?.message || "Não foi possível criar o grupo. Tente novamente.",
-      });
-    } else {
-      toast({
-        title: "Grupo criado com sucesso!",
-        description: `O grupo "${nome}" foi criado.`,
-      });
-      setNome("");
-      setDescricao("");
-      buscarGrupos();
+      const data = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        toast({
+          title: "Erro ao criar grupo",
+          description: data?.message || "Não foi possível criar o grupo. Tente novamente.",
+        });
+      } else {
+        toast({
+          title: "Grupo criado com sucesso!",
+          description: `O grupo "${nome}" foi criado.`,
+        });
+        setNome("");
+        setDescricao("");
+        buscarGrupos();
+      }
+    } catch (error) {
+      console.error("Erro ao criar grupo:", error);
     }
   };
 
+  // Solicitar entrada no grupo
   const solicitarEntrada = async (id: string) => {
-    const res = await fetch(Endpoints.SOLICITAR_ENTRADA(id), {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (res.ok) {
-      toast({
-        title: "Solicitação enviada",
-        description: "Sua solicitação de entrada no grupo foi enviada com sucesso.",
+    try {
+      const res = await fetch(Endpoints.SOLICITAR_ENTRADA(id), {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
       });
-      buscarGrupos();
-    } else {
-      toast({
-        title: "Erro ao solicitar entrada",
-        description: "Não foi possível enviar a solicitação. Tente novamente.",
-      });
+
+      if (res.ok) {
+        toast({
+          title: "Solicitação enviada",
+          description: "Sua solicitação de entrada no grupo foi enviada com sucesso.",
+        });
+        buscarGrupos();
+      } else {
+        toast({
+          title: "Erro ao solicitar entrada",
+          description: "Não foi possível enviar a solicitação. Tente novamente.",
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao solicitar entrada:", error);
     }
   };
 
+  // Excluir grupo
   const excluirGrupo = async (id: string) => {
     const confirmar = window.confirm("Tem certeza que deseja excluir este grupo?");
     if (!confirmar) return;
 
-    const res = await fetch(Endpoints.EXCLUIR_GRUPO(id), {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    try {
+      const res = await fetch(Endpoints.EXCLUIR_GRUPO(id), {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    if (res.ok) {
-      toast({
-        title: "Grupo excluído",
-        description: "O grupo foi removido com sucesso.",
-      });
-      buscarGrupos();
-    } else {
-      toast({
-        title: "Erro ao excluir grupo",
-        description: "Não foi possível excluir o grupo. Tente novamente.",
-      });
+      if (res.ok) {
+        toast({
+          title: "Grupo excluído",
+          description: "O grupo foi removido com sucesso.",
+        });
+        buscarGrupos();
+      } else {
+        toast({
+          title: "Erro ao excluir grupo",
+          description: "Não foi possível excluir o grupo. Tente novamente.",
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao excluir grupo:", error);
     }
   };
+
+  // Ordenação: Grupos que o usuário participa primeiro
+  const gruposOrdenados = [...grupos].sort((a, b) => {
+    const estaNoA = a.membros.includes(meuId);
+    const estaNoB = b.membros.includes(meuId);
+
+    if (estaNoA && !estaNoB) return -1;
+    if (!estaNoA && estaNoB) return 1;
+    return 0;
+  });
 
   useEffect(() => {
     buscarMeuId();
@@ -131,6 +168,7 @@ export default function Grupos() {
   return (
     <div className="min-h-screen bg-black text-gray-100 p-6">
       <div className="max-w-5xl mx-auto space-y-8">
+        {/* Cabeçalho */}
         <div className="space-y-1">
           <h1 className="text-3xl font-bold text-white">Grupos de Corrida</h1>
           <p className="text-gray-400">
@@ -138,6 +176,7 @@ export default function Grupos() {
           </p>
         </div>
 
+        {/* Formulário de criação de grupo */}
         <Card>
           <CardHeader>
             <CardTitle>Criar novo grupo</CardTitle>
@@ -172,28 +211,31 @@ export default function Grupos() {
 
         <Separator />
 
+        {/* Lista de grupos */}
         <div className="space-y-4">
           {grupos.length === 0 ? (
             <p className="text-gray-400">Nenhum grupo disponível ainda.</p>
           ) : (
-            grupos.map((grupo) => {
+            gruposOrdenados.map((grupo) => {
               const souAdmin = grupo.administradores.includes(meuId);
               const souMembro = grupo.membros.includes(meuId);
               const souPendente = grupo.pendentes.includes(meuId);
 
               return (
-                <Card key={grupo._id} className="bg-white text-black hover:shadow-md transition">
+                <Card
+                  key={grupo._id}
+                  className="bg-white text-black hover:shadow-md transition"
+                >
                   <CardHeader>
                     <CardTitle>{grupo.nome}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-2">
                     <p className="text-sm text-gray-700">{grupo.descricao}</p>
 
+                    {/* Badges de status */}
                     <div className="flex flex-wrap gap-2">
                       {souAdmin && (
-                        <Badge className="bg-green-700 text-white">
-                          Administrador
-                        </Badge>
+                        <Badge className="bg-green-700 text-white">Administrador</Badge>
                       )}
                       {souMembro && !souAdmin && (
                         <Badge variant="outline" className="border-green-500 text-green-700">
@@ -201,13 +243,12 @@ export default function Grupos() {
                         </Badge>
                       )}
                       {souPendente && (
-                        <Badge variant="destructive">
-                          Solicitação pendente
-                        </Badge>
+                        <Badge variant="destructive">Solicitação pendente</Badge>
                       )}
                     </div>
 
-                    <div className="flex items-center gap-2 mt-2">
+                    {/* Botões de ação */}
+                    <div className="flex items-center gap-2 mt-2 flex-wrap">
                       {!souMembro && !souPendente && (
                         <Button
                           size="sm"
@@ -217,6 +258,7 @@ export default function Grupos() {
                           Solicitar entrada
                         </Button>
                       )}
+
                       <Button
                         size="sm"
                         variant="outline"
@@ -224,6 +266,7 @@ export default function Grupos() {
                       >
                         Ver grupo
                       </Button>
+
                       {souAdmin && (
                         <Button
                           size="sm"
