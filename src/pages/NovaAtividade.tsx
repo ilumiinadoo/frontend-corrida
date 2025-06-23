@@ -52,6 +52,13 @@ export default function NovaAtividade() {
     }
   };
 
+  const handleDistanciaChange = (value: string) => {
+    const regex = /^[0-9.,]*$/; // Permite apenas números, ponto e vírgula
+    if (regex.test(value)) {
+      setDistancia(value);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -154,7 +161,7 @@ export default function NovaAtividade() {
                   type="text"
                   placeholder="Ex: 7,5 ou 7.5"
                   value={distancia}
-                  onChange={(e) => setDistancia(e.target.value)}
+                  onChange={(e) => handleDistanciaChange(e.target.value)}
                   required
                 />
               </div>

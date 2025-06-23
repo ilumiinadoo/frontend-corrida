@@ -51,6 +51,21 @@ export default function Profile() {
     }
   };
 
+  const formatarTempo = (tempoMinutos: number) => {
+    const totalSegundos = Math.round(tempoMinutos * 60);
+    const horas = Math.floor(totalSegundos / 3600);
+    const minutos = Math.floor((totalSegundos % 3600) / 60);
+    const segundos = totalSegundos % 60;
+
+    const partes = [];
+    if (horas > 0) partes.push(`${horas}h`);
+    if (minutos > 0) partes.push(`${minutos}min`);
+    if (segundos > 0) partes.push(`${segundos}s`);
+
+    return partes.join(' ') || '0s';
+  };
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -157,7 +172,7 @@ export default function Profile() {
 
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-3 text-sm">
                     <p><strong>Distância:</strong> {atividade.distanciaKm.toFixed(2)} km</p>
-                    <p><strong>Tempo:</strong> {atividade.tempoMinutos} min</p>
+                    <p><strong>Tempo:</strong> {formatarTempo(atividade.tempoMinutos)}</p>
                     <p><strong>Ritmo médio:</strong> {formatarPace(atividade.ritmoMedio)}</p>
                     <p><strong>Calorias:</strong> {atividade.calorias.toFixed(0)} kcal</p>
                   </div>
