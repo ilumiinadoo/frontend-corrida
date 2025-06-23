@@ -254,54 +254,61 @@ export default function GrupoDetalhe() {
 
       {(souMembro || souAdmin) && (
         <>
-          <div className="flex gap-4">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="default">Calendário de Eventos</Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-3xl">
-                <DialogHeader>
-                  <DialogTitle>Calendário do Grupo</DialogTitle>
-                </DialogHeader>
-                <CalendarioGrupo groupId={grupo._id} souAdmin={souAdmin} />
-              </DialogContent>
-            </Dialog>
+          <div className="flex flex-col sm:flex-row sm:gap-4">
+            {/* Bloco com os dois primeiros botões (Calendário e Ranking) */}
+            <div className="flex flex-col sm:flex-row sm:gap-4">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="default" className="w-full sm:w-auto">
+                    Acessar Calendário do Grupo
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-3xl">
+                  <DialogHeader>
+                    <DialogTitle>Calendário do Grupo</DialogTitle>
+                  </DialogHeader>
+                  <CalendarioGrupo groupId={grupo._id} souAdmin={souAdmin} />
+                </DialogContent>
+              </Dialog>
 
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button onClick={abrirRanking} variant="default">
-                  Ver Ranking Geral
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Ranking por Nível</DialogTitle>
-                </DialogHeader>
-                {loadingRanking ? (
-                  <div className="flex justify-center py-6">
-                    <Loader2 className="animate-spin" />
-                  </div>
-                ) : (
-                  rankings && (
-                    <>
-                      {renderNivel('Iniciantes', rankings['iniciante'], 'border-blue-500')}
-                      {renderNivel('Intermediários', rankings['intermediário'], 'border-yellow-500')}
-                      {renderNivel('Avançados', rankings['avançado'], 'border-red-500')}
-                    </>
-                  )
-                )}
-              </DialogContent>
-            </Dialog>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button onClick={abrirRanking} variant="default" className="w-full sm:w-auto mt-2 sm:mt-0">
+                    Ver Ranking do Grupo
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Ranking por Nível</DialogTitle>
+                  </DialogHeader>
+                  {loadingRanking ? (
+                    <div className="flex justify-center py-6">
+                      <Loader2 className="animate-spin" />
+                    </div>
+                  ) : (
+                    rankings && (
+                      <>
+                        {renderNivel('Iniciantes', rankings['iniciante'], 'border-blue-500')}
+                        {renderNivel('Intermediários', rankings['intermediário'], 'border-yellow-500')}
+                        {renderNivel('Avançados', rankings['avançado'], 'border-red-500')}
+                      </>
+                    )
+                  )}
+                </DialogContent>
+              </Dialog>
+            </div>
 
+            {/* Botão Criar Rota - sempre abaixo no mobile */}
             {souAdmin && (
               <Button
                 onClick={() => navigate(`/grupos/${id}/nova-rota`)}
-                className="bg-green-600 hover:bg-green-700 text-white"
+                className="bg-green-600 hover:bg-green-700 text-white mt-4 w-full sm:w-auto"
               >
                 Criar Rota
               </Button>
             )}
           </div>
+
 
           <Separator className="my-6" />
 
