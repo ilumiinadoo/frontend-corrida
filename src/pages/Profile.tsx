@@ -124,7 +124,7 @@ export default function Profile() {
           <div className="flex items-center justify-between mb-6">
             <Link to="/nova-atividade">
               <Button className="bg-green-600 hover:bg-green-700 text-white">
-                Realizar Nova Atividade
+                Registrar Nova Atividade
               </Button>
             </Link>
             <Link to="/editar-perfil">

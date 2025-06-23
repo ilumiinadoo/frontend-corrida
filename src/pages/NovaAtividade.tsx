@@ -11,8 +11,11 @@ import { useNavigate } from "react-router-dom";
 export default function NovaAtividade() {
   const [modo, setModo] = useState<"manual" | "mapa">("manual");
   const [distancia, setDistancia] = useState(0);
-  const [tempo, setTempo] = useState(0);
+  const [horas, setHoras] = useState(0);
+  const [minutos, setMinutos] = useState(0);
+  const [segundos, setSegundos] = useState(0);
   const [data, setData] = useState("");
+
   const [pontoInicio, setPontoInicio] = useState("");
   const [pontoFim, setPontoFim] = useState("");
   const [coordenadaInicio, setCoordenadaInicio] = useState<[number, number] | null>(null);
@@ -52,9 +55,11 @@ export default function NovaAtividade() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const tempoTotalMinutos = (horas * 60) + minutos + (segundos / 60);
+
     const payload: any = {
       distanciaKm: distancia,
-      tempoMinutos: tempo,
+      tempoMinutos: tempoTotalMinutos,
       data,
     };
 
@@ -81,6 +86,38 @@ export default function NovaAtividade() {
     }
   };
 
+
+  const renderCampoTempo = () => (
+    <div>
+      <Label>Tempo total</Label>
+      <div className="flex gap-2">
+        <Input
+          type="number"
+          placeholder="Horas"
+          value={horas}
+          onChange={(e) => setHoras(Number(e.target.value))}
+          min={0}
+        />
+        <Input
+          type="number"
+          placeholder="Minutos"
+          value={minutos}
+          onChange={(e) => setMinutos(Number(e.target.value))}
+          min={0}
+          max={59}
+        />
+        <Input
+          type="number"
+          placeholder="Segundos"
+          value={segundos}
+          onChange={(e) => setSegundos(Number(e.target.value))}
+          min={0}
+          max={59}
+        />
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-black text-gray-100 p-6">
       <div className="max-w-2xl mx-auto bg-white text-black rounded-lg shadow-md p-6">
@@ -93,13 +130,13 @@ export default function NovaAtividade() {
               variant={modo === "manual" ? "default" : "outline"}
               onClick={() => setModo("manual")}
             >
-              Modo Simples
+              Sem Mapa
             </Button>
             <Button
               variant={modo === "mapa" ? "default" : "outline"}
               onClick={() => setModo("mapa")}
             >
-              Por Início/Fim (Mapa)
+              Com Mapa
             </Button>
           </div>
         </div>
@@ -118,16 +155,7 @@ export default function NovaAtividade() {
                 />
               </div>
 
-              <div>
-                <Label>Tempo total (minutos)</Label>
-                <Input
-                  type="number"
-                  placeholder="Ex: 30"
-                  value={tempo}
-                  onChange={(e) => setTempo(Number(e.target.value))}
-                  required
-                />
-              </div>
+              {renderCampoTempo()}
 
               <div>
                 <Label>Data da atividade</Label>
@@ -143,16 +171,7 @@ export default function NovaAtividade() {
 
           {modo === "mapa" && (
             <>
-              <div>
-                <Label>Tempo total (minutos)</Label>
-                <Input
-                  type="number"
-                  placeholder="Ex: 30"
-                  value={tempo}
-                  onChange={(e) => setTempo(Number(e.target.value))}
-                  required
-                />
-              </div>
+              {renderCampoTempo()}
 
               <div>
                 <Label>Data da atividade</Label>
