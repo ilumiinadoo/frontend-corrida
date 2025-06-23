@@ -361,7 +361,12 @@ export default function GrupoDetalhe() {
                   {rotas.map((rota) => (
                     <li key={rota._id} className="p-3 border rounded">
                       <p><strong>Nome:</strong> {rota.nome}</p>
-                      <p><strong>Distância:</strong> {rota.distanciaKm} km</p>
+                      <p>
+                        <strong>Distância:</strong>{" "}
+                        {rota.distanciaKm !== undefined
+                          ? `${rota.distanciaKm.toFixed(2)} km`
+                          : "Distância não informada"}
+                      </p>
                       <div className="flex gap-3 mt-2">
                         <Button
                           size="sm"
