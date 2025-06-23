@@ -11,9 +11,9 @@ import { useNavigate } from "react-router-dom";
 export default function NovaAtividade() {
   const [modo, setModo] = useState<"manual" | "mapa">("manual");
   const [distancia, setDistancia] = useState(0);
-  const [horas, setHoras] = useState(0);
-  const [minutos, setMinutos] = useState(0);
-  const [segundos, setSegundos] = useState(0);
+  const [horas, setHoras] = useState("");
+  const [minutos, setMinutos] = useState("");
+  const [segundos, setSegundos] = useState("");
   const [data, setData] = useState("");
 
   const [pontoInicio, setPontoInicio] = useState("");
@@ -55,7 +55,9 @@ export default function NovaAtividade() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const tempoTotalMinutos = (horas * 60) + minutos + (segundos / 60);
+    const tempoTotalMinutos =
+    (Number(horas) * 60) + Number(minutos) + Number(segundos) / 60;
+
 
     const payload: any = {
       distanciaKm: distancia,
@@ -95,14 +97,14 @@ export default function NovaAtividade() {
           type="number"
           placeholder="Horas"
           value={horas}
-          onChange={(e) => setHoras(Number(e.target.value))}
+          onChange={(e) => setHoras(e.target.value)}
           min={0}
         />
         <Input
           type="number"
           placeholder="Minutos"
           value={minutos}
-          onChange={(e) => setMinutos(Number(e.target.value))}
+          onChange={(e) => setMinutos(e.target.value)}
           min={0}
           max={59}
         />
@@ -110,7 +112,7 @@ export default function NovaAtividade() {
           type="number"
           placeholder="Segundos"
           value={segundos}
-          onChange={(e) => setSegundos(Number(e.target.value))}
+          onChange={(e) => setSegundos(e.target.value)}
           min={0}
           max={59}
         />
