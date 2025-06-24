@@ -40,20 +40,18 @@ export function RankingGrupo({ groupId }: Props) {
   }, [groupId]);
 
   const formatarPace = (paceMinPerKm: number) => {
-    if (!paceMinPerKm || paceMinPerKm === Infinity || isNaN(paceMinPerKm)) {
-      return "-";
+    if (!paceMinPerKm || isNaN(paceMinPerKm) || paceMinPerKm === Infinity) {
+      return "Não calculado";
     }
 
-    let minutos = Math.floor(paceMinPerKm);
-    let segundos = Math.round((paceMinPerKm - minutos) * 60);
+    const minutos = Math.floor(paceMinPerKm);
+    const segundos = Math.round((paceMinPerKm - minutos) * 60);
 
-    if (segundos === 60) {
-      minutos += 1;
-      segundos = 0;
-    }
+    const segundosFormatados = segundos.toString().padStart(2, "0");
 
-    return `${minutos}'${segundos.toString().padStart(2, "0")}" /km`;
+    return `${minutos}'${segundosFormatados}" /km`;
   };
+
 
   const getMedalha = (pos: number) => {
     if (pos === 0) return "🥇";
@@ -89,7 +87,6 @@ export function RankingGrupo({ groupId }: Props) {
                 />
                 <span className="truncate">{user.nome}</span>
               </div>
-
               <span
                 className={`min-w-[85px] text-center px-2 py-1 text-sm rounded border ${
                   cor === "blue"
