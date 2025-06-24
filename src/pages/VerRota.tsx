@@ -38,7 +38,7 @@ export default function VerRota() {
   const navigate = useNavigate();
   const { token } = useAuth();
   const { rotaId } = useParams();
-  const [usuariosMap, setUsuariosMap] = useState<Record<string, { nome: string }>>({});
+
   const [rotaData, setRotaData] = useState<any>(null);
   const [accomplishments, setAccomplishments] = useState<any[]>([]);
   const [data, setData] = useState('');
@@ -80,35 +80,14 @@ export default function VerRota() {
         if (!res.ok) throw new Error("Erro ao buscar rota");
         const data = await res.json();
         setRotaData(data);
-        await fetchUsuarios(data.groupId);
         await fetchAccomplishments();
       } catch (err) {
         console.error("Erro ao carregar rota:", err);
       }
     };
-    
 
     fetchRota();
   }, [rotaId, token]);
-
-  const fetchUsuarios = async (groupId: string) => {
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/users/grupo/${groupId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        const map: Record<string, { nome: string }> = {};
-        data.forEach((user: any) => {
-          map[user._id] = { nome: user.nome };
-        });
-        setUsuariosMap(map);
-      }
-    } catch (err) {
-      console.error("Erro ao buscar usuários:", err);
-    }
-  };
-  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -262,7 +241,7 @@ export default function VerRota() {
                 <CardContent className="space-y-2 p-4">
                   <p>
                     <strong>👤 Usuário:</strong>{" "}
-                    {usuariosMap[acc.usuarioId]?.nome || acc.usuarioId}
+                    {acc.usuario?.nome || acc.usuarioId}
                   </p>
                   <p>
                     <strong>📅 Data:</strong>{" "}
