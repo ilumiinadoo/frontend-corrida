@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 import { toast } from "@/hooks/use-toast";
 import { Endpoints } from "../utils/endpoints";
 import CalendarioGrupo from "./components/CalendarioGrupo";
-import { RankingGrupo } from "./components/RankingGrupo";
 import ModalEventoDetalhe from "./components/ModalEventoDetalhe";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -39,6 +40,8 @@ export default function GrupoDetalhe() {
   const [meuId, setMeuId] = useState("");
   //const [feed, setFeed] = useState<any[]>([]);
   const [rotas, setRotas] = useState<any[]>([]);
+  const [rankings, setRankings] = useState<any | null>(null);
+  const [loadingRanking, setLoadingRanking] = useState(false);
   const [eventoSelecionado, setEventoSelecionado] = useState<string | null>(null);
   const navigate = useNavigate();
   const [usuariosMap, setUsuariosMap] = useState<{ [key: string]: any }>({});
@@ -119,6 +122,20 @@ export default function GrupoDetalhe() {
       fetchRotas();
     } else {
       toast({ title: "Erro ao excluir rota", description: "Tente novamente." });
+    }
+  };
+
+  const abrirRanking = async () => {
+    try {
+      setLoadingRanking(true);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/groups/${id}/rankings`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setRankings(res.data);
+    } catch {
+      toast({ title: "Erro", description: "Não foi possível carregar o ranking." });
+    } finally {
+      setLoadingRanking(false);
     }
   };
 
@@ -227,6 +244,28 @@ export default function GrupoDetalhe() {
   const souMembro = grupo.membros.includes(meuId);
   const souPendente = grupo.pendentes.includes(meuId);
 
+  const renderNivel = (titulo: string, lista: any[], cor: string) => (
+    <div>
+      <h3 className="font-semibold">{titulo}</h3>
+      {lista.length === 0 ? (
+        <p className="text-gray-500 text-sm">Nenhum corredor.</p>
+      ) : (
+        <ul className="space-y-2 mt-2">
+          {lista.map((user, idx) => (
+            <li key={user.accomplishmentId} className="flex items-center gap-3">
+              <span>{idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : `${idx + 1}º`}</span>
+              <img src={user.foto} alt={user.nome} className="w-8 h-8 rounded-full" />
+              <span>{user.nome}</span>
+              <Badge variant="outline" className={cor}>
+                {user.mediaRitmo.toFixed(2)} min/km
+              </Badge>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-black text-gray-100 p-6 space-y-6">
       <div>
@@ -266,7 +305,31 @@ export default function GrupoDetalhe() {
             </Dialog>
 
             {/* Botão Ranking */}
-            <RankingGrupo groupId={id!} />
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button onClick={abrirRanking} variant="default" className="w-full sm:w-auto">
+                  Ver Ranking do Grupo
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Ranking por Nível</DialogTitle>
+                </DialogHeader>
+                {loadingRanking ? (
+                  <div className="flex justify-center py-6">
+                    <Loader2 className="animate-spin" />
+                  </div>
+                ) : (
+                  rankings && (
+                    <>
+                      {renderNivel('Iniciantes', rankings['iniciante'], 'border-blue-500')}
+                      {renderNivel('Intermediários', rankings['intermediário'], 'border-yellow-500')}
+                      {renderNivel('Avançados', rankings['avançado'], 'border-red-500')}
+                    </>
+                  )
+                )}
+              </DialogContent>
+            </Dialog>
           </div>
 
           {/* Botão Criar Rota sempre abaixo */}
