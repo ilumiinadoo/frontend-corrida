@@ -403,18 +403,27 @@ export default function GrupoDetalhe() {
                       <div className="flex gap-3 mt-2">
                         <Button
                           size="sm"
+                          className="bg-green-600 hover:bg-green-700 text-white"
+                          onClick={() => navigate(`/rotas/${rota._id}`)}
+                        >
+                          Realizar Rota
+                        </Button>
+                        <Button
+                          size="sm"
                           variant="outline"
                           onClick={() => navigate(`/rotas/${rota._id}`)}
                         >
                           Ver no mapa
                         </Button>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => excluirRota(rota._id)}
-                        >
-                          Excluir
-                        </Button>
+                        {souAdmin && (
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => excluirRota(rota._id)}
+                          >
+                            Excluir
+                          </Button>
+                        )}
                       </div>
                     </li>
                   ))}
