@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Badge } from "@/components/ui/badge"
+//import { Badge } from "@/components/ui/badge"
 import { useEffect, useState } from "react"
 import axios from "axios"
 import { Loader2 } from "lucide-react"
@@ -33,6 +33,12 @@ export function DialogRankingGrupo({ groupId }: Props) {
       .finally(() => setLoading(false))
   }, [groupId])
 
+  const formatarPace = (paceMinPerKm: number) => {
+    const minutos = Math.floor(paceMinPerKm);
+    const segundos = Math.round((paceMinPerKm - minutos) * 60);
+    return `${minutos}'${segundos.toString().padStart(2, "0")}" /km`;
+  };
+
   const renderNivel = (titulo: string, lista: UsuarioRanking[]) => (
     <div className="mb-6">
       <h3 className="text-lg font-semibold mb-2">{titulo}</h3>
@@ -41,17 +47,37 @@ export function DialogRankingGrupo({ groupId }: Props) {
       ) : (
         <ul className="space-y-2">
           {lista.map((user, idx) => (
-            <li key={user.userId} className="flex items-center gap-3">
-              <span className="font-bold w-6">{idx + 1}º</span>
-              <img src={user.foto} alt={user.nome} className="w-8 h-8 rounded-full object-cover" />
-              <span className="flex-1">{user.nome}</span>
-              <Badge>{user.mediaRitmo.toFixed(2)} min/km</Badge>
+            <li
+              key={user.userId}
+              className="flex items-center justify-between bg-white text-black px-4 py-2 rounded shadow-sm"
+            >
+              <div className="flex items-center gap-3">
+                <span className="font-bold w-6 text-right">{idx + 1}º</span>
+                <img
+                  src={user.foto}
+                  alt={user.nome}
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+                <span>{user.nome}</span>
+              </div>
+
+              <span
+                className={`px-2 py-1 text-sm rounded border flex items-center ${
+                  titulo.includes("Iniciante")
+                    ? "border-blue-500 text-blue-700"
+                    : titulo.includes("Intermediário")
+                    ? "border-yellow-500 text-yellow-700"
+                    : "border-red-500 text-red-700"
+                }`}
+              >
+                {formatarPace(user.mediaRitmo)}
+              </span>
             </li>
           ))}
         </ul>
       )}
     </div>
-  )
+  );
 
   return (
     <Dialog>
