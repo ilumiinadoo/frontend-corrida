@@ -43,8 +43,10 @@ export function RankingGrupo({ groupId }: Props) {
     if (!paceMinPerKm || paceMinPerKm === Infinity || isNaN(paceMinPerKm)) {
       return "-";
     }
+
     const minutos = Math.floor(paceMinPerKm);
     const segundos = Math.round((paceMinPerKm - minutos) * 60);
+
     return `${minutos}'${segundos.toString().padStart(2, "0")}" /km`;
   };
 
