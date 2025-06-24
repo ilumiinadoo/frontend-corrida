@@ -44,8 +44,13 @@ export function RankingGrupo({ groupId }: Props) {
       return "-";
     }
 
-    const minutos = Math.floor(paceMinPerKm);
-    const segundos = Math.round((paceMinPerKm - minutos) * 60);
+    let minutos = Math.floor(paceMinPerKm);
+    let segundos = Math.round((paceMinPerKm - minutos) * 60);
+
+    if (segundos === 60) {
+      minutos += 1;
+      segundos = 0;
+    }
 
     return `${minutos}'${segundos.toString().padStart(2, "0")}" /km`;
   };
@@ -69,8 +74,8 @@ export function RankingGrupo({ groupId }: Props) {
               key={user.userId}
               className="flex items-center justify-between bg-white text-black px-4 py-2 rounded shadow-sm"
             >
-              <div className="flex items-center gap-3">
-                <span className="w-6 text-right">
+              <div className="flex items-center gap-3 min-w-0">
+                <span className="w-6 text-right shrink-0">
                   {getMedalha(idx) ? (
                     <span className="text-xl">{getMedalha(idx)}</span>
                   ) : (
@@ -80,9 +85,9 @@ export function RankingGrupo({ groupId }: Props) {
                 <img
                   src={user.foto}
                   alt={user.nome}
-                  className="w-8 h-8 rounded-full object-cover"
+                  className="w-8 h-8 rounded-full object-cover shrink-0"
                 />
-                <span>{user.nome}</span>
+                <span className="truncate">{user.nome}</span>
               </div>
 
               <span
