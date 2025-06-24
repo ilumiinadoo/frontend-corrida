@@ -127,9 +127,10 @@ export default function EditarPerfil() {
             <Label>Idade</Label>
             <Input
               type="number"
+              min={10}
+              max={100}
               value={idade}
               onChange={(e) => setIdade(Number(e.target.value))}
-              required
             />
           </div>
 
@@ -144,8 +145,8 @@ export default function EditarPerfil() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="iniciante">Iniciante</SelectItem>
-                <SelectItem value="intermediario">Intermediário</SelectItem>
-                <SelectItem value="avancado">Avançado</SelectItem>
+                <SelectItem value="intermediário">Intermediário</SelectItem>
+                <SelectItem value="avançado">Avançado</SelectItem>
               </SelectContent>
             </Select>
           </div>
